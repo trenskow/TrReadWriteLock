@@ -41,7 +41,7 @@ Only rule of thumb: each *lockRead* call must be match with a succeeding *unlock
 
 If you need an easier way to go, I suggest the automatic method of usage. This is done using the NSObject category implemented in *NSObject+TrReadWriteLockAdditions.h/m".
 
-Either do as mentioned above, and add the header to you precompiled header file (\<myproject/>-Prefix.h). Or you can include it manually in each file you need a read-write lock.
+Either do as mentioned above, and add the header to your precompiled header file (\<myproject/>-Prefix.h). Or you can include it manually in each file you need a read-write lock.
 
 The automatic way is implemented using blocks, as this example shows:
 
@@ -69,7 +69,7 @@ Example:
     		
 	    	[self someMethod:someObject];
 	    	
-	    	// Some method might also read and/or write lock someObject, which is perfectly fine.
+	    	// someMethod: might also read and/or write lock someObject, which is perfectly fine.
 	    	// The library will figure what to do.
 	    	
     	}];
