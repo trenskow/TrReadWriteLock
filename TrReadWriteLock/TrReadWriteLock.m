@@ -97,7 +97,7 @@ typedef struct {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_threadWillExitNotification:)
                                                  name:NSThreadWillExitNotification
-                                               object:nil];
+                                               object:thread];
     
     return newThreadInfo;
     
