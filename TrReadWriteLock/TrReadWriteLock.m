@@ -7,7 +7,6 @@
 //
 
 #import <pthread.h>
-#import <objc/runtime.h>
 
 #import "TrReadWriteLock.h"
 
