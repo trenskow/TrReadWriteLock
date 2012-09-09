@@ -36,7 +36,7 @@ and are locked and unlocked using these methods:
     [myLock lockWrite];
     [myLock unlockWrite];
 
-Only rule of thumb: each *lockRead* call must be match with a succeeding *unlockRead*. The same goes for the write lock methods - **otherwise behavior is undetermined**.
+**Only rule of thumb**: each *lockRead* call must be match with a succeeding *unlockRead*. The same goes for the write lock methods - **otherwise behavior is undetermined**.
 
 ### Using the NSObject Category and Blocks *(Recommended)*
 
