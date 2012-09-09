@@ -84,7 +84,9 @@ The code is compatible with both ARC and non-ARC projects.
 
 This code has not been fully tested, and it's scalability is unknown. It does - though - clean everything up for itself.
 
-The same goes with reader starvation. When write locks are released, it prioritizes waiting write locks over read locks. On large scales excessive write locks might starve out the read locks. See [http://en.wikipedia.org/wiki/Readers-writers_problem](http://en.wikipedia.org/wiki/Readers-writers_problem)
+The same goes with reader starvation. When write locks are released, it prioritizes other waiting write locks over waiting read locks. On large scales excessive write locks might starve out the read locks. See [http://en.wikipedia.org/wiki/Readers-writers_problem](http://en.wikipedia.org/wiki/Readers-writers_problem).
+
+This code uses the "*no writer, once added to the queue, shall be kept waiting longer than absolutely necessary*" constraint. **Therefore be considerate in you usage of writer locks.**
 
 ## Feedback
 
