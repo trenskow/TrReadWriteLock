@@ -5,7 +5,7 @@ This project contains a simple library providing an easy-to-use readers-writers 
 ## What it is?
 **TrReadWriteLock** is a readers-writers lock implementation using pthread semaphores. It is fully recursive (both read and write). Readers-writers lock is for usage in multi-threaded environnments, and allow for multiple threads to read a piece of shared memory at the time, but only one thread to write at the time.
 
-The library has been created for usage in code utilizing *[Grand Central Dispatch](http://en.wikipedia.org/wiki/Grand_Central_Dispatch)*. Although This is not required.
+The library has been created for usage in code utilizing *[Grand Central Dispatch](http://en.wikipedia.org/wiki/Grand_Central_Dispatch)*. Although this is not required.
 
 ## How to install?
 
