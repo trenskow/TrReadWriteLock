@@ -48,7 +48,15 @@ typedef struct {
     
     if ((self = [super init])) {
         
-        pthread_mutex_init(&_mutex, NULL);
+        pthread_mutexattr_t attr;
+        
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+        
+        pthread_mutex_init(&_mutex, &attr);
+        
+        pthread_mutexattr_destroy(&attr);
+        
         pthread_cond_init(&_readCondition, NULL);
         pthread_cond_init(&_writeCondition, NULL);
         
@@ -87,6 +95,8 @@ typedef struct {
 
 - (TrReadWriteLockThreadInfo *)_infoForCurrentThread {
     
+    pthread_mutex_lock(&_mutex);
+    
     NSThread* thread = [NSThread currentThread];
     
     for (NSUInteger i = 0 ; i < _threadInfoCount ; i++)
@@ -105,6 +115,8 @@ typedef struct {
                                                  name:NSThreadWillExitNotification
                                                object:thread];
     
+    pthread_mutex_unlock(&_mutex);
+    
     return newThreadInfo;
     
 }
@@ -115,6 +127,21 @@ typedef struct {
     
     for (NSUInteger i = 0 ; i < _threadInfoCount ; i++)
         if (_threadInfo[i].thread == notification.object) {
+            
+            // Clean up thread, if thread did not clean up for itself.
+            if (_threadInfo[i].writeCount > 1) {
+                _globalWriteCount -= _threadInfo[i].writeCount - 1;
+                [self unlockWrite];
+            }
+            
+            if (_threadInfo[i].readCount > 1) {
+                if (_globalReadCount > _threadInfo[i].readCount)
+                    _globalReadCount -= _threadInfo[i].readCount;
+                else {
+                    _globalReadCount -= _threadInfo[i].readCount - 1;
+                    [self unlockRead];
+                }
+            }
             
             for (NSUInteger c = i ; c < _threadInfoCount - 1 ; c++)
                 _threadInfo[c] = _threadInfo[c + 1];
