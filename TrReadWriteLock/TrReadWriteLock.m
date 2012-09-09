@@ -77,7 +77,7 @@ typedef struct {
     
     pthread_mutex_destroy(&_mutex);
     
-#   if !__has_feature(objc_arr)
+#   if !__has_feature(objc_arc)
     [super dealloc];
 #   endif
     

@@ -29,7 +29,7 @@ const char NSObjectLockKey;
     if (!(lock = objc_getAssociatedObject(self, &NSObjectLockKey))) {
         lock = [[TrReadWriteLock alloc] init];
         objc_setAssociatedObject(self, &NSObjectLockKey, lock, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-#       if !__has_feature(objc_arr)
+#       if !__has_feature(objc_arc)
         [lock release];
 #       endif
     }
