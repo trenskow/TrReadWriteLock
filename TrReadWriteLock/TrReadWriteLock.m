@@ -214,10 +214,18 @@ typedef struct {
             // Give thread back it's read locks held prior to obtaining write lock
             _globalReadCount += threadInfo->readCount;
             
-            // If no one has read locks then pending write locks, if any
-            if (_awaitingWriteLocks && !_globalReadCount)
-                pthread_cond_signal(&_writeCondition);
-            else // Else broadcast pending read locks
+            /*
+             Now that we have released the write lock, we need to determine what to do. If current thread now holds read locks, we cannot let another write lock go. Therefore we continue letting the thread read. If there a no awaiting write locks we can also let other waiting read locks continue as well. If however there ARE pending write locks, we do nothing - We want the write locks to take off before any pending read locks.
+             */
+            
+            if (!_globalReadCount) {
+                
+                if (_awaitingWriteLocks)
+                    pthread_cond_signal(&_writeCondition);
+                else // Else broadcast pending read locks
+                    pthread_cond_broadcast(&_readCondition);
+                
+            } else if (!_awaitingWriteLocks)
                 pthread_cond_broadcast(&_readCondition);
             
         }
