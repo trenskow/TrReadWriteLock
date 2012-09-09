@@ -44,7 +44,7 @@ Locking and unlocking objects in the right order can be cumbersome, and failing 
 
 Therefore if you want an easier way to go, where locking and unlocking is done automatically - and in the right order - I suggest the usage of the library's NSObject additions.
 
-Either do as mentioned above, and add the import the file "*NSObject+TrReadWriteLock.h*" to your precompiled header file (\<myproject/>-Prefix.h). Or you can include it manually in each file where you need a readers-writers lock.
+Either do as mentioned above, and import the file "*NSObject+TrReadWriteLock.h*" to your precompiled header file (\<myproject/>-Prefix.h). Or you can include it manually in each file where you need a readers-writers lock.
 
 When included, things are pretty straigt forward (you don't even need to initate a lock):
 
