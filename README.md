@@ -86,7 +86,7 @@ This code has not been fully tested, and it's scalability is unknown. It does - 
 
 The same goes with reader starvation. When write locks are released, it prioritizes other waiting write locks over waiting read locks. On large scales excessive write locks might starve out the read locks. See [http://en.wikipedia.org/wiki/Readers-writers_problem](http://en.wikipedia.org/wiki/Readers-writers_problem).
 
-This code uses the "*no writer, once added to the queue, shall be kept waiting longer than absolutely necessary*" constraint. **Therefore be considerate in you usage of writer locks.**
+This code uses the "*no writer, once added to the queue, shall be kept waiting longer than absolutely necessary*" constraint. **Therefore be considerate in your usage of writer locks** or you might end up starving your read locks.
 
 ## Feedback
 
