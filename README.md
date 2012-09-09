@@ -80,7 +80,7 @@ Example:
 
 The code is compatible with both ARC and non-ARC projects.
 
-## Disclaimer and testing
+## Disclaimer and Testing
 
 This code has not been fully tested, and it's scalability is unknown. It does - though - clean everything up for itself.
 
