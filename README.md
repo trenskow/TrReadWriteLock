@@ -59,7 +59,7 @@ or when writing:
     }];
     
 
-If your used to using the *@synthesized* Objective-C keyword, then this is for you.
+If you're used to use the *@synthesized* Objective-C keyword, then this is for you.
 
 **Tip**: Because you cannot return variables from a block, it is recomended to implement property getters like this:
 
