@@ -1,22 +1,22 @@
 # TrReadWriteLock
 
-This project contains a simple library with the intent of providing a easy-to-use read-write lock mechanism for Objective-C.
+This project contains a simple library providing an easy-to-use readers-writers lock mechanism for Mac and iOS.
 
 ## What it is?
-**TrReadWriteLock** is a read/write lock implemented using pthread semaphores. It is fully recursive (both read and write). It allows multiple threads to read the same data at once, but only one thread at the time to write.
+**TrReadWriteLock** is a readers-writers lock implementation using pthread semaphores. It is fully recursive (both read and write). Readers-writers lock is for usage in multi-threaded environnments, and allow for multiple threads to read a piece of shared memory at the time, but only one thread to write at the time.
 
-The library has been created for easy read/write locks when using Grand Central Dispatch.
+The library has been created for usage in code utilizing *[Grand Central Dispatch](http://en.wikipedia.org/wiki/Grand_Central_Dispatch)*. Although This is not required.
 
 ## How to install?
 
-Simply include these four files into your iOS or Mac OS X project:
+Simply include these four files into your iOS or Mac project:
 
     TrReadWriteLock.h
     TrReadWriteLock.m
     NSObject+TrReadWriteLockAdditions.h
     NSObject+TrReadWriteLockAdditions.m
 
-If you add this to your \<myproject\>-Prefix.h file, things will be a lot easier:
+If you add this to your \<myproject\>-Prefix.h file, you will make things a lot easier for yourself:
 
     #include "NSObject+TrReadWriteLockAdditions.h"
 
@@ -32,18 +32,21 @@ and are locked and unlocked using these methods:
 
     [myLock lockRead];
     [myLock unlockRead];
+    
     [myLock lockWrite];
     [myLock unlockWrite];
 
-Only rule of thumb: each *lockRead* call must be match with a succeeding *unlockRead*. The same goes for the write lock methods. Otherwise behavior is undetermined.
+Only rule of thumb: each *lockRead* call must be match with a succeeding *unlockRead*. The same goes for the write lock methods - **otherwise behavior is undetermined**.
 
-### Automatically
+### Using the NSObject Category and Blocks *(Recommended)*
 
-If you need an easier way to go, I suggest the automatic method of usage. This is done using the NSObject category implemented in *NSObject+TrReadWriteLockAdditions.h/m".
+Locking and unlocking objects in the right order can be cumbersome, and failing to do so makes your code unstable and hard to debug - as locks stumble on each other.
 
-Either do as mentioned above, and add the header to your precompiled header file (\<myproject/>-Prefix.h). Or you can include it manually in each file you need a read-write lock.
+Therefore if you want an easier way to go, where locking and unlocking is done automatically - and in the right order - I suggest the usage of the library's NSObject additions.
 
-The automatic way is implemented using blocks, as this example shows:
+Either do as mentioned above, and add the import the file "*NSObject+TrReadWriteLock.h*" to your precompiled header file (\<myproject/>-Prefix.h). Or you can include it manually in each file where you need a readers-writers lock.
+
+When included, things are pretty straigt forward (you don't even need to initate a lock):
 
     [someObject readLocked:^{
     	// Do some reading
@@ -54,10 +57,23 @@ or when writing:
     [someObject writeLocked:^{
         // Do some writing
     }];
+    
+
+If your use to using the *@synthesized* Objective-C keyword, then this is useful.
+
+**Tip**: Because you cannot return variables from a block, it is recomended to implement property getters like this:
+
+    - (id)someProperty {
+        __block id someProperty;
+        [self readLocked:^{
+            someProperty = _someiVar;
+        }];
+        return someProperty;
+    }
 
 ## Recursiveness
 
-The locks are fully recursive, meaning you can lock for read or lock for write any number of consecutive times you need. The library will figure out what to do.
+These locks are fully recursive, meaning you can lock for read or lock for write any number of consecutive times you need. The library will figure out what to do.
 
 Example:
 
@@ -66,6 +82,8 @@ Example:
     	// Do some reading
     	
     	[someObject writeLocked:^{
+    		
+    		[someObject doSomething];
     		
 	    	[self someMethod:someObject];
 	    	
@@ -78,19 +96,21 @@ Example:
 
 ## Automatic Reference Counting
 
-The code is compatible with both ARC and non-ARC projects.
+The code is compatible with both ARC and non-ARC projects. Only two lines are different from the ARC and non-ARC versions. Macros are used to determine the availability of ARC.
+
+## Starvation
+
+This code uses the constraint "*no writer, once added to the queue, shall be kept waiting longer than absolutely necessary*" (See [Wikipedia: Readers Writers Problem](http://en.wikipedia.org/wiki/Readers-writers_problem)).
+
+In a newer version this might be upgraded to the "*no thread shall be allowed to starve*" constraint. **But until then be considerate in your usage of writer locks or you might end up starving your read locks**. 
 
 ## Disclaimer and Testing
 
-This code has not been fully tested, and it's scalability is unknown. It does - though - clean everything up for itself.
-
-The same goes with reader starvation. When write locks are released, it prioritizes other waiting write locks over waiting read locks. On large scales excessive write locks might starve out the read locks. See [http://en.wikipedia.org/wiki/Readers-writers_problem](http://en.wikipedia.org/wiki/Readers-writers_problem).
-
-This code uses the "*no writer, once added to the queue, shall be kept waiting longer than absolutely necessary*" constraint. **Therefore be considerate in your usage of writer locks** or you might end up starving your read locks.
+This code has not been fully tested. I don't know how water tight this code is in all situations. Please test it thoroughly before using in production code.
 
 ## Feedback
 
-Please leave me a message if you have any questions or suggestions.
+Please leave me a message if you have any questions, suggestions or bugfixes.
 
 ## License
 
