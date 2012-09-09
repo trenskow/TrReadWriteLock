@@ -62,6 +62,10 @@ typedef struct {
     
     pthread_mutex_lock(&_mutex);
     
+    NSAssert(!_globalReadCount, @"Lock was deallocated while being read locked");
+    NSAssert(!_globalWriteCount, @"Lock was deallocated while being write locked");
+    NSAssert(!_awaitingWriteLocks, @"Lock was deallocated while having pending write locks");
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     free(_threadInfo);
@@ -70,6 +74,8 @@ typedef struct {
     pthread_cond_destroy(&_writeCondition);
     
     pthread_mutex_unlock(&_mutex);
+    
+    pthread_mutex_destroy(&_mutex);
     
 #   if !__has_feature(objc_arr)
     [super dealloc];
