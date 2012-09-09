@@ -214,8 +214,8 @@ typedef struct {
             // Give thread back it's read locks held prior to obtaining write lock
             _globalReadCount += threadInfo->readCount;
             
-            // First signal pending write locks, if any
-            if (_awaitingWriteLocks)
+            // If no one has read locks then pending write locks, if any
+            if (_awaitingWriteLocks && !_globalReadCount)
                 pthread_cond_signal(&_writeCondition);
             else // Else broadcast pending read locks
                 pthread_cond_broadcast(&_readCondition);
