@@ -102,7 +102,20 @@ The code is compatible with both ARC and non-ARC projects. Only two lines are di
 
 This code uses the constraint "*no writer, once added to the queue, shall be kept waiting longer than absolutely necessary*" (See [Wikipedia: Readers Writers Problem](http://en.wikipedia.org/wiki/Readers-writers_problem)).
 
-In a newer version this might be upgraded to the "*no thread shall be allowed to starve*" constraint. **But until then be considerate in your usage of writer locks or you might end up starving your read locks**. 
+In a newer version this might be upgraded to the "*no thread shall be allowed to starve*" constraint. **But until then be considerate in your usage of writer locks or you might end up starving your read locks**.
+
+## Deadlocks
+
+Even though this code seems pretty straight forward, it doesn't elimimate deadlocks because of pourly stuctured code. Always only wrap critical code sections in locks.
+
+You especially need to be careful in these kinds of situations:
+
+    Thread 1 read locks object 1
+    Thread 2 read locks object 2
+    Thread 1 goes on to write locking object 2 - will wait because of thread 1's read lock.
+    Thread 2 immidiately after goes on to write locking object 1 - and will wait because Thread 1's read lock
+    
+In the above example **a deadlock have occured**. Neither thread 1 or 2 will ever progress beoynd their request for write locks, as they both also holds read locks that makes them both wait.
 
 ## Disclaimer and Testing
 
