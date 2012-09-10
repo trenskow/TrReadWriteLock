@@ -35,8 +35,8 @@ typedef struct {
     
 }
 
-- (TrReadWriteLockThreadInfo *)_infoForCurrentThread;
-- (void)_threadWillExitNotification:(NSNotification *)notification;
+- (TrReadWriteLockThreadInfo *)_infoForThread;
+- (void)_deleteInfoForThread;
 
 @end
 
@@ -74,8 +74,6 @@ typedef struct {
     NSAssert(!_globalWriteCount, @"Lock was deallocated while being write locked");
     NSAssert(!_awaitingWriteLocks, @"Lock was deallocated while having pending write locks");
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
     free(_threadInfo);
     
     pthread_cond_destroy(&_readCondition);
@@ -93,7 +91,7 @@ typedef struct {
 
 #pragma mark - Private Methods
 
-- (TrReadWriteLockThreadInfo *)_infoForCurrentThread {
+- (TrReadWriteLockThreadInfo *)_infoForThread {
     
     pthread_mutex_lock(&_mutex);
     
@@ -110,23 +108,18 @@ typedef struct {
     bzero(newThreadInfo, sizeof(TrReadWriteLockThreadInfo));
     newThreadInfo->thread = thread;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(_threadWillExitNotification:)
-                                                 name:NSThreadWillExitNotification
-                                               object:thread];
-    
     pthread_mutex_unlock(&_mutex);
     
     return newThreadInfo;
     
 }
 
-- (void)_threadWillExitNotification:(NSNotification *)notification {
+- (void)_deleteInfoForThread {
     
     pthread_mutex_lock(&_mutex);
     
     for (NSUInteger i = 0 ; i < _threadInfoCount ; i++)
-        if (_threadInfo[i].thread == notification.object) {
+        if (_threadInfo[i].thread == [NSThread currentThread]) {
             
             // Clean up thread, if thread did not clean up for itself.
             if (_threadInfo[i].writeCount > 1) {
@@ -162,7 +155,7 @@ typedef struct {
     
     pthread_mutex_lock(&_mutex);
     
-    TrReadWriteLockThreadInfo* threadInfo = [self _infoForCurrentThread];
+    TrReadWriteLockThreadInfo* threadInfo = [self _infoForThread];
     
     // Ignore read lock requests if thread already holds the write lock.
     if (!threadInfo->writeCount) {
@@ -185,7 +178,7 @@ typedef struct {
     
     pthread_mutex_lock(&_mutex);
     
-    TrReadWriteLockThreadInfo* threadInfo = [self _infoForCurrentThread];
+    TrReadWriteLockThreadInfo* threadInfo = [self _infoForThread];
     
     // Ignore read lock release request if thread already holds the write lock.
     if (!threadInfo->writeCount) {
@@ -197,6 +190,9 @@ typedef struct {
         if (!_globalReadCount)
             pthread_cond_signal(&_writeCondition);
         
+        if (!threadInfo->readCount && !threadInfo->writeCount)
+            [self _deleteInfoForThread];
+            
     }
     
     pthread_mutex_unlock(&_mutex);
@@ -207,7 +203,7 @@ typedef struct {
     
     pthread_mutex_lock(&_mutex);
     
-    TrReadWriteLockThreadInfo* threadInfo = [self _infoForCurrentThread];
+    TrReadWriteLockThreadInfo* threadInfo = [self _infoForThread];
     
     // If thread holds no write locks
     if (!threadInfo->writeCount) {
@@ -234,7 +230,7 @@ typedef struct {
     
     pthread_mutex_lock(&_mutex);
     
-    TrReadWriteLockThreadInfo* threadInfo = [self _infoForCurrentThread];
+    TrReadWriteLockThreadInfo* threadInfo = [self _infoForThread];
     
     // If thread holds write lock
     if (threadInfo->writeCount) {
@@ -262,7 +258,10 @@ typedef struct {
                 pthread_cond_broadcast(&_readCondition);
             
         }
-                
+        
+        if (!threadInfo->readCount && !threadInfo->writeCount)
+            [self _deleteInfoForThread];
+        
     }
     
     pthread_mutex_unlock(&_mutex);
