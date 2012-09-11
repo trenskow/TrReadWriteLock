@@ -1,5 +1,5 @@
 //
-//  SUGUReadWriteLock.h
+//  TrReadWriteLock.h
 //  sugulib
 //
 //  Created by Kristian Trenskow on 9/7/12.
