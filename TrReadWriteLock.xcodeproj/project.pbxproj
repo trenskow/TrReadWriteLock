@@ -10,6 +10,8 @@
 		A1B1800F15FBFF5700F8D702 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B1800E15FBFF5700F8D702 /* Foundation.framework */; };
 		A1B1802015FBFF7900F8D702 /* NSObject+TrReadWriteLockAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B1801D15FBFF7900F8D702 /* NSObject+TrReadWriteLockAdditions.m */; };
 		A1B1802115FBFF7900F8D702 /* TrReadWriteLock.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B1801F15FBFF7900F8D702 /* TrReadWriteLock.m */; };
+		A1FCBD7015FF4C4400B5B113 /* TrLock.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCBD6F15FF4C4400B5B113 /* TrLock.m */; };
+		A1FCBD7615FF4E6000B5B113 /* TrCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCBD7515FF4E6000B5B113 /* TrCondition.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +35,11 @@
 		A1B1801E15FBFF7900F8D702 /* TrReadWriteLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrReadWriteLock.h; path = TrReadWriteLock/TrReadWriteLock.h; sourceTree = SOURCE_ROOT; };
 		A1B1801F15FBFF7900F8D702 /* TrReadWriteLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TrReadWriteLock.m; path = TrReadWriteLock/TrReadWriteLock.m; sourceTree = SOURCE_ROOT; };
 		A1B1802315FBFF9C00F8D702 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		A1FCBD6E15FF4C4400B5B113 /* TrLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrLock.h; sourceTree = "<group>"; };
+		A1FCBD6F15FF4C4400B5B113 /* TrLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrLock.m; sourceTree = "<group>"; };
+		A1FCBD7415FF4E6000B5B113 /* TrCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrCondition.h; sourceTree = "<group>"; };
+		A1FCBD7515FF4E6000B5B113 /* TrCondition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrCondition.m; sourceTree = "<group>"; };
+		A1FCBD7A15FF4F7500B5B113 /* TrLock+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TrLock+Protected.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				A1B1802315FBFF9C00F8D702 /* README.md */,
-				A1B1801015FBFF5700F8D702 /* TrReadWriteLock */,
+				A1B1801015FBFF5700F8D702 /* TrLocking */,
 				A1B1800D15FBFF5700F8D702 /* Frameworks */,
 				A1B1800C15FBFF5700F8D702 /* Products */,
 			);
@@ -73,14 +80,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A1B1801015FBFF5700F8D702 /* TrReadWriteLock */ = {
+		A1B1801015FBFF5700F8D702 /* TrLocking */ = {
 			isa = PBXGroup;
 			children = (
 				A1B1802215FBFF8300F8D702 /* Additions */,
-				A1B1801E15FBFF7900F8D702 /* TrReadWriteLock.h */,
-				A1B1801F15FBFF7900F8D702 /* TrReadWriteLock.m */,
+				A1FCBD7915FF4E7900B5B113 /* Locks */,
 				A1B1801115FBFF5700F8D702 /* Supporting Files */,
 			);
+			name = TrLocking;
 			path = TrReadWriteLock;
 			sourceTree = "<group>";
 		};
@@ -99,6 +106,44 @@
 				A1B1801D15FBFF7900F8D702 /* NSObject+TrReadWriteLockAdditions.m */,
 			);
 			name = Additions;
+			sourceTree = "<group>";
+		};
+		A1FCBD7215FF4D2F00B5B113 /* Lock */ = {
+			isa = PBXGroup;
+			children = (
+				A1FCBD6E15FF4C4400B5B113 /* TrLock.h */,
+				A1FCBD7A15FF4F7500B5B113 /* TrLock+Protected.h */,
+				A1FCBD6F15FF4C4400B5B113 /* TrLock.m */,
+			);
+			name = Lock;
+			sourceTree = "<group>";
+		};
+		A1FCBD7315FF4D3400B5B113 /* Read Write Lock */ = {
+			isa = PBXGroup;
+			children = (
+				A1B1801E15FBFF7900F8D702 /* TrReadWriteLock.h */,
+				A1B1801F15FBFF7900F8D702 /* TrReadWriteLock.m */,
+			);
+			name = "Read Write Lock";
+			sourceTree = "<group>";
+		};
+		A1FCBD7815FF4E6C00B5B113 /* Condition */ = {
+			isa = PBXGroup;
+			children = (
+				A1FCBD7415FF4E6000B5B113 /* TrCondition.h */,
+				A1FCBD7515FF4E6000B5B113 /* TrCondition.m */,
+			);
+			name = Condition;
+			sourceTree = "<group>";
+		};
+		A1FCBD7915FF4E7900B5B113 /* Locks */ = {
+			isa = PBXGroup;
+			children = (
+				A1FCBD7215FF4D2F00B5B113 /* Lock */,
+				A1FCBD7815FF4E6C00B5B113 /* Condition */,
+				A1FCBD7315FF4D3400B5B113 /* Read Write Lock */,
+			);
+			name = Locks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,6 +199,8 @@
 			files = (
 				A1B1802015FBFF7900F8D702 /* NSObject+TrReadWriteLockAdditions.m in Sources */,
 				A1B1802115FBFF7900F8D702 /* TrReadWriteLock.m in Sources */,
+				A1FCBD7015FF4C4400B5B113 /* TrLock.m in Sources */,
+				A1FCBD7615FF4E6000B5B113 /* TrCondition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
