@@ -8,11 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+@class TrLock;
 @class TrReadWriteLock;
 
 @interface NSObject (TrReadWriteLockAdditions)
 
-@property (nonatomic,readonly) TrReadWriteLock* lock;
+@property (nonatomic,readonly) TrLock* lock;
+@property (nonatomic,readonly) TrReadWriteLock* rwLock;
+
+- (void)locked:(void(^)())block;
 
 - (void)readLocked:(void(^)())block;
 - (void)writeLocked:(void(^)())block;
