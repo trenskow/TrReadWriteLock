@@ -110,10 +110,10 @@ Even though this code seems pretty straight forward, it doesn't eliminate deadlo
 
 You especially need to be careful in these kinds of situations:
 
-    Thread 1 read-locks object 1
-    Thread 2 read-locks object 2
-    Thread 1 goes on to write-locking object 2 - will wait because of thread 1 is read lock.
-    Thread 2 immediately after goes on to write-locking object 1 - and will wait because Thread 1's read-lock
+    Thread 1 read-locks object A
+    Thread 2 read-locks object B
+    Thread 1 goes on to write-locking object B - will wait because of thread 2 has read locked object B.
+    Thread 2 immediately after goes on to write-locking object A - and will wait because Thread 1's read-lock on object A
     
 In the above example **a deadlock have occurred**. Neither thread 1 or 2 will ever progress beyond their request for write locks, as they both also holds read locks that makes them both wait.
 
