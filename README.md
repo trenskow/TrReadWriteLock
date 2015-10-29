@@ -127,4 +127,4 @@ Please leave me a message if you have any questions, suggestions or bugfixes.
 
 ## License
 
-The code is open and free.
+See LICENSE.
